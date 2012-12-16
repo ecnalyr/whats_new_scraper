@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import urllib2
 import re
 import datetime
+import json
 
 
 #  If we install pip and lxml correctly (gcc issues)
@@ -88,15 +89,23 @@ def getSkuFromlink(link):
     '''Expects the suffix of a Sephora.com product link'''
     return re.search('P\d{6}', link).group(0)  # i.e. P123456
 
+def buildJsonPostRequest(url):
+    '''expects a url to a .json post action'''
+    request = urllib2.Request(url)
+    request.add_header('Content-Type', 'application/json')
+    return request
+
 class SephoraProduct:
     '''A product from Sephora crated using a newItemDiv in a BeautifulSoup format'''
     def __init__(self, newItemDiv):
         self.price = str(getPriceFromDiv(newItemDiv))
         self.brandAndName = str(getBrandAndNameFromDiv(newItemDiv))
         self.timeAdded = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-        self.link = str(getLinkFromDiv(newItemDiv))
-        self.imageLink = str(getImageLinkFromDiv(newItemDiv))
+        self.link = str(prependSephoraRoot(getLinkFromDiv(newItemDiv)))
+        self.imageLink = str(prependSephoraRoot(getImageLinkFromDiv(newItemDiv)))
         self.sku = str(getSkuFromlink(self.link))
+        self.json = json.dumps({'name':self.brandAndName, 'price':self.price, 'sku':self.sku, 
+                                'link':self.link, 'imageLink':self.imageLink, 'scrape_time':self.timeAdded})
 
     def getPrice(self):
         return self.price
@@ -108,16 +117,19 @@ class SephoraProduct:
         return self.timeAdded
 
     def getLink(self):
-        return prependSephoraRoot(self.link)
+        return self.link
 
     def getImageLink(self):
-        return prependSephoraRoot(self.imageLink)
+        return self.imageLink
 
     def getSku(self):
         '''Note that this is different than Sephora's item numbers'''
         return self.sku
 
+    def getJson(self):
+        return self.json
 
+uploadProductsUrl = "http://0.0.0.0:3000/products.json"
 sephoraNewItemLink = "http://www.sephora.com/contentStore/mediaContentTemplate.jsp?mediaId=12800020"
 newItemSoup = soupify(getHtml(sephoraNewItemLink))
 newItems = newItemSoup.find_all("div", {"class": "product-item"})
@@ -127,9 +139,13 @@ for item in newItems:
     product = SephoraProduct(item)
     productList.append(product)
 
-for item in productList:
+for item in productList[0:2]:
     print str(item.getTimeAdded()) + " " + str(item.getPrice()) + " " + str(item.getBrandAndName())
     print item.getLink()
     print item.getImageLink()
     print item.getSku()
+    jsonData = item.getJson()
+    print jsonData
     print "******"
+    request = buildJsonPostRequest(uploadProductsUrl)
+    urllib2.urlopen(request, jsonData)

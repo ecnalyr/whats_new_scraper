@@ -1,0 +1,17 @@
+###
+
+{"utf8"=>"✓", "authenticity_token"=>"Zfv6Hdh3cIrUDV2oOY6hcdF+hCMQXrIH3XWG8b4x6G8=", 
+"product"=>{"name"=>"JASONISCOOL", "price"=>"", "scrape_time(1i)"=>"2012", "scrape_time(2i)"=>"12", 
+"scrape_time(3i)"=>"16", "scrape_time(4i)"=>"01", "scrape_time(5i)"=>"22", "link"=>"", "imageLink"=>"", 
+"sku"=>""}, "commit"=>"Create Product"}
+
+{"{\"product_link\": \"/lash-stash-P376731\", \"product_price\": \"45.00\", \"product_sku\": \"P376731\", \"product_imageLink\": \"/productimages/sku/s1453919-main-grid.jpg\", \"product_name\": \"Sephora Favorites Lash Stash\", \"product_scrape_time\": \"2012-12-15 19:19\"}"=>nil}
+###
+
+Processing by ProductsController#create as JSON
+  Parameters: {"{\"product\": {\"sku\": \"P376731\", \"name\": \"Sephora Favorites Lash Stash\", \"price\": \"45.00\", \"imageLink\": \"/productimages/sku/s1453919-main-grid.jpg\", \"link\": \"/lash-stash-P376731\", \"scrape_time\": \"2012-12-15 19:31\"}}"=>nil}
+WARNING: Can't verify CSRF token authenticity
+   (0.1ms)  begin transaction
+  SQL (0.4ms)  INSERT INTO "products" ("created_at", "imageLink", "link", "name", "price", "scrape_time", "sku", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["created_at", Sun, 16 Dec 2012 01:31:02 UTC +00:00], ["imageLink", nil], ["link", nil], ["name", nil], ["price", nil], ["scrape_time", nil], ["sku", nil], ["updated_at", Sun, 16 Dec 2012 01:31:02 UTC +00:00]]
+   (3.2ms)  commit transaction
+Completed 201 Created in 7ms (Views: 1.1ms | ActiveRecord: 3.7ms)
