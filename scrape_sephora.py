@@ -4,6 +4,7 @@ import re
 import datetime
 import json
 
+__author__ = 'ecnalyr'
 
 #  If we install pip and lxml correctly (gcc issues)
 #  This will allow us to use something that isn't a regular expression
