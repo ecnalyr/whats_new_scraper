@@ -3,19 +3,9 @@ import urllib2
 import re
 import datetime
 import json
+from scraper_tools import soupify, getHtml, buildJsonPostRequest
 
 __author__ = 'ecnalyr'
-
-#  If we install pip and lxml correctly (gcc issues)
-#  This will allow us to use something that isn't a regular expression
-def soupify(htmlData):
-    """Expects HTML data from a web page"""
-    return BeautifulSoup(htmlData, "html.parser")
-
-
-def getHtml(url):
-    """Returns html data from a given url"""
-    return urllib2.urlopen(url)
 
 
 def stripTags(item):
@@ -59,10 +49,16 @@ def getPriceFromDiv(div):
         return "There is no price"
 
 
+def encodeBrandNameToUTF8(brand):
+    return str(brand.encode("utf-8"))
+
 def getBrandAndNameFromDiv(div):
     """Expects a BeautifulSoup div from sephora.com new product page"""
     try:
         brand = div.find("span", {"class": "name OneLinkNoTx"})
+        return stripTags(stripExtraSpaces(stripNewLines(brand))).lstrip()
+    except UnicodeEncodeError:
+        encodeBrandNameToUTF8(brand)
         return stripTags(stripExtraSpaces(stripNewLines(brand))).lstrip()
     except AttributeError:
         return "There is no brand"
@@ -90,11 +86,6 @@ def getSkuFromlink(link):
     """Expects the suffix of a Sephora.com product link"""
     return re.search('P\d{6}', link).group(0)  # i.e. P123456
 
-def buildJsonPostRequest(url):
-    '''expects a url to a .json post action'''
-    request = urllib2.Request(url)
-    request.add_header('Content-Type', 'application/json')
-    return request
 
 class SephoraProduct:
     """A product from Sephora crated using a newItemDiv in a BeautifulSoup format"""
