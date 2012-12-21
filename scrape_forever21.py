@@ -41,7 +41,7 @@ def getPriceFromDiv(table):
     """Expects a BeautifulSoup table from forever21.com new product page"""
     try:
         price = table.find("font", {"class": "price"}).string
-        return price
+        return price.replace("$", "") # have to remove the dollar sign from the price
     except AttributeError:
         return "There is no price"
 
