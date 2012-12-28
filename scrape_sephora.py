@@ -92,21 +92,17 @@ class SephoraProduct:
     def __init__(self, newItemDiv):
         self.price = str(getPriceFromDiv(newItemDiv))
         self.brandAndName = str(getBrandAndNameFromDiv(newItemDiv))
-        self.timeAdded = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         self.link = str(prependSephoraRoot(getLinkFromDiv(newItemDiv)))
         self.imageLink = str(prependSephoraRoot(getImageLinkFromDiv(newItemDiv)))
         self.sku = str(getSkuFromlink(self.link))
         self.json = json.dumps({'store':'Sephora', 'name':self.brandAndName, 'price':self.price, 'sku':self.sku, 
-                                'link':self.link, 'imageLink':self.imageLink, 'scrape_time':self.timeAdded})
+                                'link':self.link, 'imageLink':self.imageLink})
 
     def getPrice(self):
         return self.price
 
     def getBrandAndName(self):
         return self.brandAndName
-
-    def getTimeAdded(self):
-        return self.timeAdded
 
     def getLink(self):
         return self.link
@@ -132,7 +128,7 @@ for item in newItems:
     productList.append(product)
 
 for item in productList[0:]:
-    print str(item.getTimeAdded()) + " " + str(item.getPrice()) + " " + str(item.getBrandAndName())
+    print str(item.getPrice()) + " " + str(item.getBrandAndName())
     print item.getLink()
     print item.getImageLink()
     print item.getSku()
