@@ -52,7 +52,7 @@ def buildLinkFromSKU(sku):
 
 
 class Forever21Product:
-    """A product from Sephora crated using a newItemDiv in a BeautifulSoup format"""
+    """A product from Forever21 crated using a newItemDiv in a BeautifulSoup format"""
     def __init__(self, productTable):
         self.price = str(getPriceFromDiv(productTable))
         self.brandAndName = str(getBrandAndNameFromDiv(productTable))
